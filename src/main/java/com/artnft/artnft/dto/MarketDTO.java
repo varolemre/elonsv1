@@ -28,6 +28,11 @@ public class MarketDTO {
 
     private Date createdDate;
 
+    private Long totalNftSale;
+
+    private Long totalEdition;
+
+    private Long floorPrice;
 
     public MarketDTO(Market market){
         this.setMarketId(market.getId());
@@ -39,6 +44,23 @@ public class MarketDTO {
         this.setImage(market.getNft().getImage());
         this.setQtype(market.getNft().getQtype());
         this.setCreatedDate(market.getCreatedDate());
+        this.setTotalEdition(market.getNft().getTotalEdition());
+    }
+
+
+    public MarketDTO(Market market,Long totalNftSale,Long floorPrice){
+        this.setMarketId(market.getId());
+        this.setAmount(market.getAmount());
+        this.setNftId(market.getNft().getId());
+        this.setUserId(market.getUser().getId());
+        this.setNftName(market.getNft().getName());
+        this.setSerial(market.getNft().getSerial());
+        this.setImage(market.getNft().getImage());
+        this.setQtype(market.getNft().getQtype());
+        this.setCreatedDate(market.getCreatedDate());
+        this.setTotalEdition(market.getNft().getTotalEdition());
+        this.setTotalNftSale(totalNftSale);
+        this.setFloorPrice(floorPrice);
     }
 
     public  MarketDTO(){

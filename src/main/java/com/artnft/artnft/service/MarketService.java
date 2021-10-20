@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -91,7 +92,25 @@ public class MarketService {
 
     public MarketDTO getNftById(Long marketId) {
         Market byId = marketRepository.getById(marketId);
-        MarketDTO convertedMarket = marketDtoConverter.convert(byId);
+        Long totalNft = countNft(byId.getNft().getName());
+        Long floorPrice = findFloorPrice(marketId);
+        MarketDTO convertedMarket = marketDtoConverter.convert(byId,totalNft,floorPrice);
+
         return convertedMarket;
+    }
+
+    public Long countNft(String nftName) {
+        long size = marketRepository.findByNftName(nftName).size();
+        return size;
+    }
+
+    public Long findFloorPrice(Long marketId){
+        Optional<Market> byId = marketRepository.findById(marketId);
+        String nftName = byId.get().getNft().getName();
+        String qtype = byId.get().getNft().getQtype();
+        List<Market> byNftNameAndNftQtype = marketRepository.findByNftNameAndNftQtype(nftName, qtype);
+        Optional<Market> min = byNftNameAndNftQtype.stream().min(Comparator.comparing(Market::getAmount));
+        return min.get().getAmount();
+
     }
 }

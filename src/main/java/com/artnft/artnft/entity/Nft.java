@@ -35,6 +35,9 @@ public class Nft {
     @JsonView(Views.Base.class)
     private String image;
 
+    @JsonView(Views.Base.class)
+    private Long totalEdition;
+
     @JsonView(Views.Sensitive.class)
     private boolean sellStatus=false;
 

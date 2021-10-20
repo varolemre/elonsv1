@@ -57,4 +57,9 @@ public class MarketController {
     public MarketDTO getNftById(@PathVariable Long marketId){
         return marketService.getNftById(marketId);
     }
+
+    @GetMapping("/market/totalsale/{nftName}")
+    public Long countNft(@PathVariable String nftName){
+        return marketService.countNft(nftName);
+    }
 }

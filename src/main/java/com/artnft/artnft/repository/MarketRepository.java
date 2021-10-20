@@ -21,4 +21,6 @@ public interface MarketRepository extends JpaRepository<Market, Long> {
 
     List<Market> findByNftName(String title);
 
+    List<Market> findByNftNameAndNftQtype(String NftName, String NftQtype);
+
 }
