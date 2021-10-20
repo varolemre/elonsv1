@@ -1,5 +1,6 @@
 package com.artnft.artnft.service;
 
+import com.artnft.artnft.convert.MarketDtoConverter;
 import com.artnft.artnft.dto.MarketDTO;
 import com.artnft.artnft.dto.NftDto;
 import com.artnft.artnft.entity.Market;
@@ -23,12 +24,15 @@ public class MarketService {
     private final MarketRepository marketRepository;
     private final  UserService userService;
     private final NftService nftService;
+    private final MarketDtoConverter marketDtoConverter;
 
     public String addMarketItem(Long userId, Long nftId , Long amount) {
         User currentUser = userService.getUserById(userId);
         Optional<Nft> currentNft = nftService.findById(nftId);
         Long idWhichSellNftUserId = currentNft.get().getUser().getId();
-
+        System.out.println(idWhichSellNftUserId);
+        System.out.println(userId);
+        System.out.println(currentNft);
         if(userId==idWhichSellNftUserId && currentNft.get().isSellStatus()==false){
             Market market = new Market();
             currentNft.get().setSellStatus(true);
@@ -40,7 +44,7 @@ public class MarketService {
             marketRepository.save(market);
             return "market";
         }
-        return null;
+        return "Hata";
     }
 
     public Page<Market> getMarketItems(Pageable page) {
@@ -83,5 +87,11 @@ public class MarketService {
         Collections.sort(collect, Comparator.comparing(MarketDTO::getCreatedDate).reversed());
 
         return pagelist;
+    }
+
+    public MarketDTO getNftById(Long marketId) {
+        Market byId = marketRepository.getById(marketId);
+        MarketDTO convertedMarket = marketDtoConverter.convert(byId);
+        return convertedMarket;
     }
 }

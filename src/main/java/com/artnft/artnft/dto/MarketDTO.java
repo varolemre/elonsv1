@@ -10,6 +10,8 @@ import java.util.Date;
 @Data
 public class MarketDTO {
 
+    private Long marketId;
+
     private Long amount;
 
     private Long nftId;
@@ -28,6 +30,7 @@ public class MarketDTO {
 
 
     public MarketDTO(Market market){
+        this.setMarketId(market.getId());
         this.setAmount(market.getAmount());
         this.setNftId(market.getNft().getId());
         this.setUserId(market.getUser().getId());
@@ -36,5 +39,9 @@ public class MarketDTO {
         this.setImage(market.getNft().getImage());
         this.setQtype(market.getNft().getQtype());
         this.setCreatedDate(market.getCreatedDate());
+    }
+
+    public  MarketDTO(){
+
     }
 }

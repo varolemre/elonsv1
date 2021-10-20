@@ -52,4 +52,9 @@ public class MarketController {
     public List<MarketDTO> getMarketByTitle(Pageable page, @PathVariable String title,@PathVariable(name="sort",required = false) String sort){
         return marketService.findMarketByTitle(title,sort);
     }
+
+    @GetMapping("/market/details/{marketId}")
+    public MarketDTO getNftById(@PathVariable Long marketId){
+        return marketService.getNftById(marketId);
+    }
 }

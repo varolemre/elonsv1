@@ -18,6 +18,7 @@ public class AuthController {
     @Autowired
     UserRepository userRepository;
 
+
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @PostMapping("/auth")
