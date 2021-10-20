@@ -7,10 +7,7 @@ import com.artnft.artnft.entity.Nft;
 import com.artnft.artnft.entity.User;
 import com.artnft.artnft.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -57,15 +54,34 @@ public class MarketService {
         return collect;
     }
 
-    public Page<Market> getMarketItemsByCost(Pageable page) {
-        Page<Market> allProductsSortedByName = (Page<Market>) marketRepository.findAll(Sort.by("amount"));
+    public Page<Market> getMarketItemsByPage(Pageable page,String nftName) {
+        Page<Market> allProductsSortedByName = marketRepository.findAllByNftName(nftName,page);
         return allProductsSortedByName;
     }
 
-    public List<MarketDTO> findMarketListLast(){
+    public List<MarketDTO> findMarketListLast(String sort){
         List<MarketDTO> collect = marketRepository.findAll().stream().map(MarketDTO::new).collect(Collectors.toList());
 
         Collections.sort(collect, Comparator.comparing(MarketDTO::getCreatedDate).reversed());
+
         return collect;
+    }
+
+    public List<MarketDTO> findMarketByTitle(String title,String sort) {
+        List<MarketDTO> collect = marketRepository.findByNftName(title).stream().map(MarketDTO::new).collect(Collectors.toList());
+        if(("lowtohigh").equals(sort)){
+            Collections.sort(collect, Comparator.comparing(MarketDTO::getAmount));
+        }else if(sort.equals("rarity")){
+            Collections.sort(collect, Comparator.comparing(MarketDTO::getSerial));
+        }
+        return collect;
+    }
+
+    public Page<MarketDTO> findMarketListLast2(String sort,Pageable pageable) {
+        List<MarketDTO> collect = marketRepository.findAll().stream().map(MarketDTO::new).collect(Collectors.toList());
+        Page<MarketDTO> pagelist = new PageImpl<MarketDTO>(collect,pageable ,collect.size() );
+        Collections.sort(collect, Comparator.comparing(MarketDTO::getCreatedDate).reversed());
+
+        return pagelist;
     }
 }

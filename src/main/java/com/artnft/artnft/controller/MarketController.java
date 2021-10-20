@@ -26,9 +26,10 @@ public class MarketController {
         return marketService.getMarketItems(page).map(MarketDTO::new);
     }
 
-    @GetMapping("/market/sbp")
-    public Page<MarketDTO> getMarketItemsByCost(Pageable page){
-        return  marketService.getMarketItemsByCost(page).map(MarketDTO::new);
+
+    @GetMapping("/market/sbp/{nftName}")
+    public Page<MarketDTO> getMarketItemsByPage(Pageable page, @PathVariable String nftName){
+        return  marketService.getMarketItemsByPage(page,nftName).map(MarketDTO::new);
     }
 
     @GetMapping("/market/getlist")
@@ -36,8 +37,19 @@ public class MarketController {
         return  marketService.findMarketList();
     }
 
-    @GetMapping("/market/last")
-    public List<MarketDTO> getMarketListLast(Pageable page){
-        return  marketService.findMarketListLast();
+    @GetMapping({"/market/last/{sort}","/market/last"})
+    public List<MarketDTO> getMarketListLast(Pageable page,@PathVariable(name="sort",required = false) String sort){
+        return  marketService.findMarketListLast(sort);
+    }
+
+    @GetMapping({"/market2/last/{sort}","/market2/last"})
+    public Page<MarketDTO> getMarketListLast2(Pageable page,@PathVariable(name="sort",required = false) String sort){
+        return  marketService.findMarketListLast2(sort,page);
+    }
+
+
+    @GetMapping({"/market/{title}/{sort}","/market/{title}"})
+    public List<MarketDTO> getMarketByTitle(Pageable page, @PathVariable String title,@PathVariable(name="sort",required = false) String sort){
+        return marketService.findMarketByTitle(title,sort);
     }
 }
