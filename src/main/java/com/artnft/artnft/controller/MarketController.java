@@ -26,10 +26,10 @@ public class MarketController {
         return marketService.getMarketItems(page).map(MarketDTO::new);
     }
 
-
-    @GetMapping("/market/sbp/{nftName}")
-    public Page<MarketDTO> getMarketItemsByPage(Pageable page, @PathVariable String nftName){
-        return  marketService.getMarketItemsByPage(page,nftName).map(MarketDTO::new);
+    //Nft adına göre page ile son recordları getir
+    @GetMapping({"/market/list/{nftName}","/market/list/{nftName}/{pageN}"})
+    public Page<MarketDTO> getMarketItemsByPage(Pageable page, @PathVariable String nftName,@PathVariable(name="pageN", required = false) Long pageN){
+        return  marketService.getMarketItemsByPage(page,nftName,pageN).map(MarketDTO::new);
     }
 
     @GetMapping("/market/getlist")
@@ -53,6 +53,7 @@ public class MarketController {
         return marketService.findMarketByTitle(title,sort);
     }
 
+
     @GetMapping("/market/details/{marketId}")
     public MarketDTO getNftById(@PathVariable Long marketId){
         return marketService.getNftById(marketId);
@@ -61,5 +62,10 @@ public class MarketController {
     @GetMapping("/market/totalsale/{nftName}")
     public Long countNft(@PathVariable String nftName){
         return marketService.countNft(nftName);
+    }
+
+    @GetMapping("/market/{marketId}/changes")
+    public Long getChangedValue(@PathVariable Long marketId){
+        return marketService.getChangedValue(marketId);
     }
 }

@@ -34,6 +34,14 @@ public class MarketDTO {
 
     private Long floorPrice;
 
+    private String dropDate;
+
+    private String licence;
+
+    private String listPrice;
+
+    private String owner;
+
     public MarketDTO(Market market){
         this.setMarketId(market.getId());
         this.setAmount(market.getAmount());
@@ -45,6 +53,10 @@ public class MarketDTO {
         this.setQtype(market.getNft().getQtype());
         this.setCreatedDate(market.getCreatedDate());
         this.setTotalEdition(market.getNft().getTotalEdition());
+        this.setDropDate(market.getNft().getDropDate());
+        this.setLicence(market.getNft().getLicence());
+        this.setListPrice(market.getNft().getListPrice());
+        this.setOwner(market.getNft().getUser().getUsername());
     }
 
 
@@ -61,6 +73,10 @@ public class MarketDTO {
         this.setTotalEdition(market.getNft().getTotalEdition());
         this.setTotalNftSale(totalNftSale);
         this.setFloorPrice(floorPrice);
+        this.setDropDate(market.getNft().getDropDate());
+        this.setLicence(market.getNft().getLicence());
+        this.setListPrice(market.getNft().getListPrice());
+        this.setOwner(market.getNft().getUser().getUsername());
     }
 
     public  MarketDTO(){

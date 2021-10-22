@@ -23,6 +23,10 @@ public class MarketDtoConverter {
         marketDTO.setTotalNftSale(totalNft);
         marketDTO.setTotalEdition(market.getNft().getTotalEdition());
         marketDTO.setFloorPrice(floorPrice);
+        marketDTO.setDropDate(market.getNft().getDropDate());
+        marketDTO.setListPrice(market.getNft().getListPrice());
+        marketDTO.setLicence(market.getNft().getLicence());
+        marketDTO.setOwner(market.getNft().getUser().getUsername());
         return marketDTO;
     }
 }

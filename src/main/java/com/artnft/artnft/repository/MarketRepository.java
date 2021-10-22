@@ -17,6 +17,7 @@ public interface MarketRepository extends JpaRepository<Market, Long> {
 
     Page<Market> findAllByNftName(String NftName ,Pageable pageable);
 
+
     List<Market> findByUserId(Long id);
 
     List<Market> findByNftName(String title);

@@ -2,10 +2,11 @@ package com.artnft.artnft.service;
 
 import com.artnft.artnft.convert.MarketDtoConverter;
 import com.artnft.artnft.dto.MarketDTO;
-import com.artnft.artnft.dto.NftDto;
+import com.artnft.artnft.entity.Changed;
 import com.artnft.artnft.entity.Market;
 import com.artnft.artnft.entity.Nft;
 import com.artnft.artnft.entity.User;
+import com.artnft.artnft.repository.ChangedRepository;
 import com.artnft.artnft.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -26,6 +27,9 @@ public class MarketService {
     private final  UserService userService;
     private final NftService nftService;
     private final MarketDtoConverter marketDtoConverter;
+    private final ChangedRepository changedRepository;
+
+
 
     public String addMarketItem(Long userId, Long nftId , Long amount) {
         User currentUser = userService.getUserById(userId);
@@ -59,9 +63,16 @@ public class MarketService {
         return collect;
     }
 
-    public Page<Market> getMarketItemsByPage(Pageable page,String nftName) {
-        Page<Market> allProductsSortedByName = marketRepository.findAllByNftName(nftName,page);
-        return allProductsSortedByName;
+    //NFT ADIYLA MARKETTEKİLERİ LİSTELEME SON EKLENENLER :)
+    public Page<Market> getMarketItemsByPage(Pageable page,String nftName,Long pageNumber) {
+        System.out.println("ilk"+pageNumber);
+        if(pageNumber==null){
+            pageNumber=0l;
+        }
+        System.out.println(pageNumber);
+        Pageable pageable =  PageRequest.of(pageNumber.intValue(), 4, Sort.Direction.DESC, "id");
+        Page<Market> allNftsSortedByName = marketRepository.findAllByNftName(nftName,pageable);
+        return allNftsSortedByName;
     }
 
     public List<MarketDTO> findMarketListLast(String sort){
@@ -90,6 +101,9 @@ public class MarketService {
         return pagelist;
     }
 
+
+
+
     public MarketDTO getNftById(Long marketId) {
         Market byId = marketRepository.getById(marketId);
         Long totalNft = countNft(byId.getNft().getName());
@@ -113,4 +127,31 @@ public class MarketService {
         return min.get().getAmount();
 
     }
+
+    public Long findFloorPriceByNameAndVariant(String nftName, String qtype){
+        List<Market> byNftNameAndNftQtype = marketRepository.findByNftNameAndNftQtype(nftName, qtype);
+        Optional<Market> min = byNftNameAndNftQtype.stream().min(Comparator.comparing(Market::getAmount));
+        if(min.isEmpty()){
+            return 0L;
+        }
+        return min.get().getAmount();
+
+    }
+
+    public List<Market> findByNftNameAndVariant(String nftName,String variant){
+        List<Market> byNftNameAndNftQtype = marketRepository.findByNftNameAndNftQtype(nftName, variant);
+        return byNftNameAndNftQtype;
+    }
+
+    public Long getChangedValue(Long marketId) {
+        Optional<Market> byId = marketRepository.findById(marketId);
+        String nftName = byId.get().getNft().getName();
+        String variant = byId.get().getNft().getQtype();
+        Changed byNftNameAndVariant = changedRepository.findByNftNameAndVariant(nftName, variant);
+        Long changedValue = byNftNameAndVariant.getChangedValue();
+        System.out.println(changedValue);
+        return changedValue;
+    }
+
+
 }

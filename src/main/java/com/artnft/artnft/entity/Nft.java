@@ -38,6 +38,15 @@ public class Nft {
     @JsonView(Views.Base.class)
     private Long totalEdition;
 
+    @JsonView(Views.Base.class)
+    private String dropDate;
+
+    @JsonView(Views.Base.class)
+    private String listPrice;
+
+    @JsonView(Views.Base.class)
+    private String licence;
+
     @JsonView(Views.Sensitive.class)
     private boolean sellStatus=false;
 
