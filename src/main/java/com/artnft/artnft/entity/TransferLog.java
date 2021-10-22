@@ -10,7 +10,6 @@ import java.util.Date;
 @Table(name = "TransferLog")
 @Data
 public class TransferLog {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,0 +1,15 @@
+version: '3.5'
+
+services:
+  db:
+    container_name: nftartDB
+    image: mysql:5.7
+    ports:
+      - '3306:3306'
+    restart: always
+    environment:
+      - TZ=Europe/Istanbul
+      - MYSQL_ROOT_PASSWORD=fbfbfb333
+      - MYSQL_DATABASE=nftart
+      - MYSQL_USER=nftart
+      - MYSQL_PASSWORD=nftart333

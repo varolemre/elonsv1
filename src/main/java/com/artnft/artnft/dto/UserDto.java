@@ -5,19 +5,12 @@ import lombok.Data;
 
 @Data
 public class UserDto {
-
     private String username;
-
     private String mail;
-
     private String image;
-
     private String wallet;
-
     private String displayName;
-
     private Long balance;
-
 
 
     public UserDto(User user) {

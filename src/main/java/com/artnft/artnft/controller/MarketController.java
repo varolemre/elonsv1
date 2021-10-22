@@ -1,19 +1,20 @@
 package com.artnft.artnft.controller;
 
 import com.artnft.artnft.dto.MarketDTO;
-import com.artnft.artnft.entity.Market;
 import com.artnft.artnft.service.MarketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class MarketController {
-
     private final MarketService marketService;
 
     @PostMapping("/sell/{userId}/{nftId}/{amount}")
@@ -28,7 +29,9 @@ public class MarketController {
 
     //Nft adına göre page ile son recordları getir
     @GetMapping({"/market/list/{nftName}","/market/list/{nftName}/{pageN}"})
-    public Page<MarketDTO> getMarketItemsByPage(Pageable page, @PathVariable String nftName,@PathVariable(name="pageN", required = false) Long pageN){
+    public Page<MarketDTO> getMarketItemsByPage(Pageable page,
+                                                @PathVariable String nftName,
+                                                @PathVariable(name="pageN", required = false) Long pageN){
         return  marketService.getMarketItemsByPage(page,nftName,pageN).map(MarketDTO::new);
     }
 
@@ -47,12 +50,10 @@ public class MarketController {
         return  marketService.findMarketListLast2(sort,page);
     }
 
-
     @GetMapping({"/market/{title}/{sort}","/market/{title}"})
     public List<MarketDTO> getMarketByTitle(Pageable page, @PathVariable String title,@PathVariable(name="sort",required = false) String sort){
         return marketService.findMarketByTitle(title,sort);
     }
-
 
     @GetMapping("/market/details/{marketId}")
     public MarketDTO getNftById(@PathVariable Long marketId){

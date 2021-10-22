@@ -5,13 +5,9 @@ import lombok.Data;
 
 @Data
 public class NftDto {
-
     private String name;
-
     private String qtype;
-
     private int serial;
-
     private String image;
 
     public NftDto(Nft nft){

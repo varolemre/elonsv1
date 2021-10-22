@@ -4,8 +4,6 @@ import com.artnft.artnft.dto.MarketDTO;
 import com.artnft.artnft.entity.Market;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-
 @Service
 public class MarketDtoConverter {
 

@@ -9,148 +9,145 @@ import com.artnft.artnft.entity.User;
 import com.artnft.artnft.repository.ChangedRepository;
 import com.artnft.artnft.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MarketService {
 
     private final MarketRepository marketRepository;
-    private final  UserService userService;
+    private final UserService userService;
     private final NftService nftService;
     private final MarketDtoConverter marketDtoConverter;
     private final ChangedRepository changedRepository;
 
 
-
-    public String addMarketItem(Long userId, Long nftId , Long amount) {
+    public String addMarketItem(Long userId, Long nftId, Long amount) {
         User currentUser = userService.getUserById(userId);
         Optional<Nft> currentNft = nftService.findById(nftId);
-        Long idWhichSellNftUserId = currentNft.get().getUser().getId();
-        System.out.println(idWhichSellNftUserId);
-        System.out.println(userId);
-        System.out.println(currentNft);
-        if(userId==idWhichSellNftUserId && currentNft.get().isSellStatus()==false){
-            Market market = new Market();
-            currentNft.get().setSellStatus(true);
-            nftService.saveNft(currentNft.get());
-            market.setUser(currentUser);
-            market.setNft(currentNft.get());
-            market.setAmount(amount);
-            market.setSerial(currentNft.get().getSerial());
-            marketRepository.save(market);
-            return "market";
+        if (currentNft.isPresent()) {
+            Long idWhichSellNftUserId = currentNft.get().getUser().getId();
+            if (Objects.equals(userId, idWhichSellNftUserId) && !currentNft.get().isSellStatus()) {
+                Market market = new Market();
+                currentNft.get().setSellStatus(true);
+                nftService.saveNft(currentNft.get());
+                market.setUser(currentUser);
+                market.setNft(currentNft.get());
+                market.setAmount(amount);
+                market.setSerial(currentNft.get().getSerial());
+                marketRepository.save(market);
+                return "market";
+            }
         }
         return "Hata";
     }
 
     public Page<Market> getMarketItems(Pageable page) {
-        return marketRepository.findAll((org.springframework.data.domain.Pageable) page);
+        return marketRepository.findAll(page);
     }
 
-    public List<MarketDTO> findMarketList(){
-        List<MarketDTO> collect = marketRepository.findAll().stream().map(MarketDTO::new).collect(Collectors.toList());
-
-        Collections.sort(collect, Comparator.comparingLong(MarketDTO::getAmount));
-        return collect;
+    public List<MarketDTO> findMarketList() {
+        return marketRepository.findAll()
+                .stream()
+                .map(MarketDTO::new)
+                .sorted(Comparator.comparingLong(MarketDTO::getAmount))
+                .collect(Collectors.toList());
     }
 
     //NFT ADIYLA MARKETTEKİLERİ LİSTELEME SON EKLENENLER :)
-    public Page<Market> getMarketItemsByPage(Pageable page,String nftName,Long pageNumber) {
-        System.out.println("ilk"+pageNumber);
-        if(pageNumber==null){
-            pageNumber=0l;
+    public Page<Market> getMarketItemsByPage(Pageable page, String nftName, Long pageNumber) {
+        if (pageNumber == null) {
+            pageNumber = 0L;
         }
-        System.out.println(pageNumber);
-        Pageable pageable =  PageRequest.of(pageNumber.intValue(), 4, Sort.Direction.DESC, "id");
-        Page<Market> allNftsSortedByName = marketRepository.findAllByNftName(nftName,pageable);
-        return allNftsSortedByName;
+        Pageable pageable = PageRequest.of(pageNumber.intValue(), 4, Sort.Direction.DESC, "id");
+        return marketRepository.findAllByNftName(nftName, pageable);
     }
 
-    public List<MarketDTO> findMarketListLast(String sort){
-        List<MarketDTO> collect = marketRepository.findAll().stream().map(MarketDTO::new).collect(Collectors.toList());
-
-        Collections.sort(collect, Comparator.comparing(MarketDTO::getCreatedDate).reversed());
-
-        return collect;
+    public List<MarketDTO> findMarketListLast(String sort) {
+        return marketRepository.findAll().stream()
+                .map(MarketDTO::new)
+                .sorted(Comparator.comparing(MarketDTO::getCreatedDate).reversed())
+                .collect(Collectors.toList());
     }
 
-    public List<MarketDTO> findMarketByTitle(String title,String sort) {
+    public List<MarketDTO> findMarketByTitle(String title, String sort) {
         List<MarketDTO> collect = marketRepository.findByNftName(title).stream().map(MarketDTO::new).collect(Collectors.toList());
-        if(("lowtohigh").equals(sort)){
-            Collections.sort(collect, Comparator.comparing(MarketDTO::getAmount));
-        }else if(sort.equals("rarity")){
-            Collections.sort(collect, Comparator.comparing(MarketDTO::getSerial));
+        if (("lowtohigh").equals(sort)) {
+            collect.sort(Comparator.comparing(MarketDTO::getAmount));
+        } else if (sort.equals("rarity")) {
+            collect.sort(Comparator.comparing(MarketDTO::getSerial));
         }
         return collect;
     }
 
-    public Page<MarketDTO> findMarketListLast2(String sort,Pageable pageable) {
+    public Page<MarketDTO> findMarketListLast2(String sort, Pageable pageable) {
         List<MarketDTO> collect = marketRepository.findAll().stream().map(MarketDTO::new).collect(Collectors.toList());
-        Page<MarketDTO> pagelist = new PageImpl<MarketDTO>(collect,pageable ,collect.size() );
-        Collections.sort(collect, Comparator.comparing(MarketDTO::getCreatedDate).reversed());
+        Page<MarketDTO> pagelist = new PageImpl<>(collect, pageable, collect.size());
+        collect.sort(Comparator.comparing(MarketDTO::getCreatedDate).reversed());
 
         return pagelist;
     }
-
-
 
 
     public MarketDTO getNftById(Long marketId) {
         Market byId = marketRepository.getById(marketId);
         Long totalNft = countNft(byId.getNft().getName());
         Long floorPrice = findFloorPrice(marketId);
-        MarketDTO convertedMarket = marketDtoConverter.convert(byId,totalNft,floorPrice);
-
-        return convertedMarket;
+        return marketDtoConverter.convert(byId, totalNft, floorPrice);
     }
 
     public Long countNft(String nftName) {
-        long size = marketRepository.findByNftName(nftName).size();
-        return size;
+        return (long) marketRepository.findByNftName(nftName).size();
     }
 
-    public Long findFloorPrice(Long marketId){
+    public Long findFloorPrice(Long marketId) {
         Optional<Market> byId = marketRepository.findById(marketId);
-        String nftName = byId.get().getNft().getName();
-        String qtype = byId.get().getNft().getQtype();
-        List<Market> byNftNameAndNftQtype = marketRepository.findByNftNameAndNftQtype(nftName, qtype);
-        Optional<Market> min = byNftNameAndNftQtype.stream().min(Comparator.comparing(Market::getAmount));
-        return min.get().getAmount();
-
+        if (byId.isPresent()) {
+            String nftName = byId.get().getNft().getName();
+            String qtype = byId.get().getNft().getQtype();
+            List<Market> byNftNameAndNftQtype = marketRepository.findByNftNameAndNftQtype(nftName, qtype);
+            Optional<Market> min = byNftNameAndNftQtype.stream().min(Comparator.comparing(Market::getAmount));
+            if(min.isPresent()){
+                return min.get().getAmount();
+            }else {
+                //todo
+            }
+        }
+        return 0L; //todo
     }
 
-    public Long findFloorPriceByNameAndVariant(String nftName, String qtype){
+    public Long findFloorPriceByNameAndVariant(String nftName, String qtype) {
         List<Market> byNftNameAndNftQtype = marketRepository.findByNftNameAndNftQtype(nftName, qtype);
         Optional<Market> min = byNftNameAndNftQtype.stream().min(Comparator.comparing(Market::getAmount));
-        if(min.isEmpty()){
+        if (min.isEmpty()) {
             return 0L;
         }
         return min.get().getAmount();
 
     }
 
-    public List<Market> findByNftNameAndVariant(String nftName,String variant){
-        List<Market> byNftNameAndNftQtype = marketRepository.findByNftNameAndNftQtype(nftName, variant);
-        return byNftNameAndNftQtype;
+    public List<Market> findByNftNameAndVariant(String nftName, String variant) {
+        return marketRepository.findByNftNameAndNftQtype(nftName, variant);
     }
 
     public Long getChangedValue(Long marketId) {
         Optional<Market> byId = marketRepository.findById(marketId);
-        String nftName = byId.get().getNft().getName();
-        String variant = byId.get().getNft().getQtype();
-        Changed byNftNameAndVariant = changedRepository.findByNftNameAndVariant(nftName, variant);
-        Long changedValue = byNftNameAndVariant.getChangedValue();
-        System.out.println(changedValue);
-        return changedValue;
+        if (byId.isPresent()) {
+            String nftName = byId.get().getNft().getName();
+            String variant = byId.get().getNft().getQtype();
+            Changed byNftNameAndVariant = changedRepository.findByNftNameAndVariant(nftName, variant);
+            return byNftNameAndVariant.getChangedValue();
+        }
+        return 0L; //todo
     }
 
 

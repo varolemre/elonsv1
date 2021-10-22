@@ -14,8 +14,6 @@ import java.util.Date;
 @EntityListeners({AuditingEntityListener.class})
 public abstract class BaseEntity implements Serializable {
 
-
-
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
@@ -62,7 +60,6 @@ public abstract class BaseEntity implements Serializable {
     public void setOperationType(String operationType) {
         this.operationType = operationType;
     }
-
 
     public Date getCreatedDate() {
         return createdDate;

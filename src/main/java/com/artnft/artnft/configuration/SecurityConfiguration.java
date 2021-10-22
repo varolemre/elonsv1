@@ -1,5 +1,6 @@
 package com.artnft.artnft.configuration;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -14,10 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    UserAuthService userAuthService;
+    private final UserAuthService userAuthService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

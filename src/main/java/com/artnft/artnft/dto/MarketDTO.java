@@ -1,8 +1,6 @@
 package com.artnft.artnft.dto;
 
 import com.artnft.artnft.entity.Market;
-import com.artnft.artnft.entity.Nft;
-import com.artnft.artnft.entity.User;
 import lombok.Data;
 
 import java.util.Date;
@@ -11,35 +9,20 @@ import java.util.Date;
 public class MarketDTO {
 
     private Long marketId;
-
     private Long amount;
-
     private Long nftId;
-
     private String nftName;
-
     private int serial;
-
     private Long userId;
-
     private String image;
-
     private String qtype;
-
     private Date createdDate;
-
     private Long totalNftSale;
-
     private Long totalEdition;
-
     private Long floorPrice;
-
     private String dropDate;
-
     private String licence;
-
     private String listPrice;
-
     private String owner;
 
     public MarketDTO(Market market){

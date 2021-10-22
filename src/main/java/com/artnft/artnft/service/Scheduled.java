@@ -7,9 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Configuration
@@ -23,50 +21,47 @@ public class Scheduled {
 
     private String qtype = "Rare";
     private Long prevPrice = 100L;
-    private String nftName ="SERA";
+    private String nftName = "SERA";
     private Long l2;
 
-    String[] nameArray={"SERA","Darvin","LOST"};
-    String[] variantArray={"Common","Uncommon","Rare","Secret Rare"};
+    String[] nameArray = {"SERA", "Darvin", "LOST"};
+    String[] variantArray = {"Common", "Uncommon", "Rare", "Secret Rare"};
 
     @org.springframework.scheduling.annotation.Scheduled(fixedRate = 900000L)
     void findChangedValue() {
-        for(int i=0; i<nameArray.length;i++){
-            for (int k=0; k<variantArray.length;k++){
+        for (int i = 0; i < nameArray.length; i++) {
+            for (int k = 0; k < variantArray.length; k++) {
                 List<Market> byNftNameAndVariantList = marketService.findByNftNameAndVariant(nameArray[i], variantArray[k]);
-                if(byNftNameAndVariantList.size()>0){
-                    System.out.println("Bu nft ve Bu Varyantta nft markette var");
-                    Changed changed = new Changed();
+                if (!byNftNameAndVariantList.isEmpty()) {
                     Changed byNftNameAndVariant = changedRepository.findByNftNameAndVariant(nameArray[i], variantArray[k]);
                     Long oldPrice = byNftNameAndVariant.getOldPrice();
                     Long newPrice = marketService.findFloorPriceByNameAndVariant(nameArray[i], variantArray[k]);
-                    if(oldPrice==0){
-                        oldPrice=newPrice;
-                    }else{
-                    if(oldPrice<=newPrice){
-                        //Önceki floor price ile şimdiki arasındaki yüzde değişimini bul
-                        long l = newPrice - oldPrice;
-                        long l1 = oldPrice / 100;
-                        l2 = l / l1;
-                        byNftNameAndVariant.setChangedValue(l2);
-                        byNftNameAndVariant.setOldPrice(newPrice);
-                        changedRepository.save(byNftNameAndVariant);
-                    }else{
-                        long l = oldPrice - newPrice;
-                        long l1 = oldPrice / 100;
-                        l2 = l / l1;
-                        byNftNameAndVariant.setChangedValue(l2);
-                        byNftNameAndVariant.setOldPrice(newPrice);
-                        changedRepository.save(byNftNameAndVariant);
-                    }}
+                    if (oldPrice == 0) {
+                        oldPrice = newPrice;
+                    } else {
+                        if (oldPrice <= newPrice) {
+                            //Önceki floor price ile şimdiki arasındaki yüzde değişimini bul
+                            long l = newPrice - oldPrice;
+                            long l1 = oldPrice / 100;
+                            l2 = l / l1;
+                            byNftNameAndVariant.setChangedValue(l2);
+                            byNftNameAndVariant.setOldPrice(newPrice);
+                            changedRepository.save(byNftNameAndVariant);
+                        } else {
+                            long l = oldPrice - newPrice;
+                            long l1 = oldPrice / 100;
+                            l2 = l / l1;
+                            byNftNameAndVariant.setChangedValue(l2);
+                            byNftNameAndVariant.setOldPrice(newPrice);
+                            changedRepository.save(byNftNameAndVariant);
+                        }
+                    }
                 }
             }
         }
 
 
-
     }
-
 
 
 //    @org.springframework.scheduling.annotation.Scheduled(fixedRate = 19000L)
@@ -144,8 +139,8 @@ public class Scheduled {
 //        return l2.intValue();
 //    }
 
-    public Changed getChangedName(String nftName,String variant){
-        return changedRepository.findByNftNameAndVariant(nftName,variant);
+    public Changed getChangedName(String nftName, String variant) {
+        return changedRepository.findByNftNameAndVariant(nftName, variant);
     }
 
 

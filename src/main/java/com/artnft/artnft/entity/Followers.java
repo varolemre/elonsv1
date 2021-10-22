@@ -1,11 +1,7 @@
 package com.artnft.artnft.entity;
 
-import com.artnft.artnft.dto.UserDto;
-import com.artnft.artnft.dto.Views;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Data;
 
 import javax.persistence.*;
 
