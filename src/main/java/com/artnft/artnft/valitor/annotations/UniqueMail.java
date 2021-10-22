@@ -1,4 +1,6 @@
-package com.artnft.artnft.entity;
+package com.artnft.artnft.valitor.annotations;
+
+import com.artnft.artnft.valitor.UniqueMailValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -12,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Constraint(validatedBy = { UniqueMailValidator.class })
 public @interface UniqueMail {
-    String message() default "{Mail Adress Must Be Unique ..}";
+    String message() default "Mail Address Must Be Unique";
 
     Class<?>[] groups() default { };
 

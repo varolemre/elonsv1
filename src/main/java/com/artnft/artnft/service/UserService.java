@@ -12,11 +12,13 @@ import com.artnft.artnft.repository.MarketRepository;
 import com.artnft.artnft.repository.NftRepository;
 import com.artnft.artnft.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -33,26 +35,26 @@ public class UserService {
     private final NftRepository nftRepository;
     private final MarketRepository marketRepository;
 
-    @Transactional
-    public GenericResponse saveUser(User user) {
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+    @Transactional(propagation = Propagation.MANDATORY)
+    public User saveUser(User user) {
+        user.setPassword(new BCryptPasswordEncoder().encode(String.valueOf(user.getPassword())));
         user.setWalletId(UUID.randomUUID().toString());
-        userRepository.save(user);
-        return new GenericResponse("User Created");
+        return userRepository.save(user);
     }
 
     public User getUsers(Long id) {
         return userRepository.findById(id).orElseThrow();
     }
 
+    @SneakyThrows
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow();
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ClassNotFoundException("Kullanıcı"));
     }
 
     public User getUserByWalletId(String walletId) {
         return userRepository.findBywalletId(walletId);
     }
-
 
     public User getByUsername(String username) {
         User inDb = userRepository.findByUsername(username);
@@ -118,5 +120,9 @@ public class UserService {
 
     public List<Market> getUserNftOnSale(User user) {
         return marketRepository.findByUserId(user.getId());
+    }
+
+    private void isUserExists(){
+
     }
 }

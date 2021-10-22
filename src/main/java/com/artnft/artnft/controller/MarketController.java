@@ -1,72 +1,89 @@
 package com.artnft.artnft.controller;
 
 import com.artnft.artnft.dto.MarketDTO;
+import com.artnft.artnft.entity.Market;
+import com.artnft.artnft.response.ApiResponse;
 import com.artnft.artnft.service.MarketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/market")
 public class MarketController {
     private final MarketService marketService;
 
     @PostMapping("/sell/{userId}/{nftId}/{amount}")
-    public String addMarketItem(@PathVariable Long userId, @PathVariable Long nftId, @PathVariable Long amount){
-        return marketService.addMarketItem(userId,nftId,amount);
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public ResponseEntity<ApiResponse> addMarketItem(
+            @PathVariable Long userId,
+            @PathVariable Long nftId,
+            @PathVariable Long amount) {
+        Market marketItem = marketService.addMarketItem(userId, nftId, amount);
+        return ApiResponse.responseOk(marketItem);
     }
 
-    @GetMapping("/market")
-    public Page<MarketDTO> getMarketItems(Pageable page){
-        return marketService.getMarketItems(page).map(MarketDTO::new);
+    @GetMapping
+    public ResponseEntity<ApiResponse> getMarketItems(
+            @Param("page") int page,
+            @Param("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ApiResponse.responseOk(marketService.getMarketItems(pageable));
     }
 
     //Nft adına göre page ile son recordları getir
-    @GetMapping({"/market/list/{nftName}","/market/list/{nftName}/{pageN}"})
-    public Page<MarketDTO> getMarketItemsByPage(Pageable page,
-                                                @PathVariable String nftName,
-                                                @PathVariable(name="pageN", required = false) Long pageN){
-        return  marketService.getMarketItemsByPage(page,nftName,pageN).map(MarketDTO::new);
+    @GetMapping("/list/{nftName}")
+    public Page<MarketDTO> getMarketItemsByPage(
+            @PathVariable String nftName,
+            @Param("page") int page,
+            @Param("size") int size,
+            @Param("sort") int sort) {
+        Pageable pageable;
+        if (sort == -1) {
+            pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "id");
+        } else {
+            pageable = PageRequest.of(page, size).withSort(Sort.Direction.ASC, "id");
+        }
+        return marketService.getMarketItemsByPage(pageable, nftName).map(MarketDTO::new);
     }
 
-    @GetMapping("/market/getlist")
-    public List<MarketDTO> getMarketList(Pageable page){
-        return  marketService.findMarketList();
+    @GetMapping("/getlist")
+    public List<MarketDTO> getMarketList(Pageable page) {
+        return marketService.findMarketList();
     }
 
-    @GetMapping({"/market/last/{sort}","/market/last"})
-    public List<MarketDTO> getMarketListLast(Pageable page,@PathVariable(name="sort",required = false) String sort){
-        return  marketService.findMarketListLast(sort);
+    @GetMapping({"/last/{sort}", "/last"})
+    public List<MarketDTO> getMarketListLast(Pageable page, @PathVariable(name = "sort", required = false) String sort) {
+        return marketService.findMarketListLast(sort);
     }
 
-    @GetMapping({"/market2/last/{sort}","/market2/last"})
-    public Page<MarketDTO> getMarketListLast2(Pageable page,@PathVariable(name="sort",required = false) String sort){
-        return  marketService.findMarketListLast2(sort,page);
+    @GetMapping({"/{title}/{sort}", "/{title}"})
+    public List<MarketDTO> getMarketByTitle(Pageable page, @PathVariable String title, @PathVariable(name = "sort", required = false) String sort) {
+        return marketService.findMarketByTitle(title, sort);
     }
 
-    @GetMapping({"/market/{title}/{sort}","/market/{title}"})
-    public List<MarketDTO> getMarketByTitle(Pageable page, @PathVariable String title,@PathVariable(name="sort",required = false) String sort){
-        return marketService.findMarketByTitle(title,sort);
-    }
-
-    @GetMapping("/market/details/{marketId}")
-    public MarketDTO getNftById(@PathVariable Long marketId){
+    @GetMapping("/details/{marketId}")
+    public MarketDTO getNftById(@PathVariable Long marketId) {
         return marketService.getNftById(marketId);
     }
 
-    @GetMapping("/market/totalsale/{nftName}")
-    public Long countNft(@PathVariable String nftName){
+    @GetMapping("/totalsale/{nftName}")
+    public Long countNft(@PathVariable String nftName) {
         return marketService.countNft(nftName);
     }
 
-    @GetMapping("/market/{marketId}/changes")
-    public Long getChangedValue(@PathVariable Long marketId){
+    @GetMapping("/{marketId}/changes")
+    public Long getChangedValue(@PathVariable Long marketId) {
         return marketService.getChangedValue(marketId);
     }
 }

@@ -1,4 +1,4 @@
-package com.artnft.artnft;
+package com.artnft.artnft.valitor.annotations;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 

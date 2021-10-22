@@ -6,12 +6,18 @@ import com.artnft.artnft.entity.Changed;
 import com.artnft.artnft.entity.Market;
 import com.artnft.artnft.entity.Nft;
 import com.artnft.artnft.entity.User;
+import com.artnft.artnft.exception.CustomNotAllowedException;
+import com.artnft.artnft.exception.CustomNotFoundException;
 import com.artnft.artnft.repository.ChangedRepository;
 import com.artnft.artnft.repository.MarketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
@@ -30,8 +36,8 @@ public class MarketService {
     private final MarketDtoConverter marketDtoConverter;
     private final ChangedRepository changedRepository;
 
-
-    public String addMarketItem(Long userId, Long nftId, Long amount) {
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Market addMarketItem(Long userId, Long nftId, Long amount) {
         User currentUser = userService.getUserById(userId);
         Optional<Nft> currentNft = nftService.findById(nftId);
         if (currentNft.isPresent()) {
@@ -44,11 +50,11 @@ public class MarketService {
                 market.setNft(currentNft.get());
                 market.setAmount(amount);
                 market.setSerial(currentNft.get().getSerial());
-                marketRepository.save(market);
-                return "market";
+                return marketRepository.save(market);
             }
+            throw new CustomNotAllowedException("İzinsiz işlem");
         }
-        return "Hata";
+        throw new CustomNotFoundException("NFT");
     }
 
     public Page<Market> getMarketItems(Pageable page) {
@@ -64,11 +70,7 @@ public class MarketService {
     }
 
     //NFT ADIYLA MARKETTEKİLERİ LİSTELEME SON EKLENENLER :)
-    public Page<Market> getMarketItemsByPage(Pageable page, String nftName, Long pageNumber) {
-        if (pageNumber == null) {
-            pageNumber = 0L;
-        }
-        Pageable pageable = PageRequest.of(pageNumber.intValue(), 4, Sort.Direction.DESC, "id");
+    public Page<Market> getMarketItemsByPage(Pageable pageable, String nftName) {
         return marketRepository.findAllByNftName(nftName, pageable);
     }
 

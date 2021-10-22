@@ -1,52 +1,41 @@
 package com.artnft.artnft.controller;
 
-import com.artnft.artnft.CurrentUser;
-import com.artnft.artnft.dto.GenericResponse;
 import com.artnft.artnft.dto.UserDto;
+import com.artnft.artnft.dto.UserRegisterDto;
 import com.artnft.artnft.dto.UserUptadeDto;
 import com.artnft.artnft.dto.Views;
 import com.artnft.artnft.entity.Followers;
 import com.artnft.artnft.entity.Market;
 import com.artnft.artnft.entity.Nft;
 import com.artnft.artnft.entity.User;
-import com.artnft.artnft.error.ApiError;
+import com.artnft.artnft.response.ApiResponse;
 import com.artnft.artnft.service.UserService;
+import com.artnft.artnft.valitor.annotations.CurrentUser;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final ModelMapper mapper;
 
     @PostMapping
-    public GenericResponse createUser(@Valid @RequestBody User user) {
-        return userService.saveUser(user);
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handledValidationException(MethodArgumentNotValidException exception) {
-        ApiError error = new ApiError(400, "validation error", "/users");
-        Map<String, String> validationErrors = new HashMap<>();
-        for (FieldError fieldError : exception.getBindingResult().getFieldErrors()) {
-            validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
-        }
-        error.setValidationErrors(validationErrors);
-        return error;
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public ResponseEntity<ApiResponse> createUser(@Valid @RequestBody UserRegisterDto userRegisterDto) {
+        User user = mapper.map(userRegisterDto, User.class);
+        userService.saveUser(user);
+        return ApiResponse.responseCreated(true);
     }
 
     @GetMapping("/get/{id}")

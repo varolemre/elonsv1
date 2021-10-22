@@ -1,6 +1,8 @@
 package com.artnft.artnft.entity;
 
 import com.artnft.artnft.dto.Views;
+import com.artnft.artnft.valitor.annotations.UniqueMail;
+import com.artnft.artnft.valitor.annotations.UniqueUsername;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
@@ -41,12 +43,12 @@ public class User extends BaseEntity implements UserDetails  {
     @JsonView(Views.Base.class)
     private String displayName;
 
-
     @Size(min=1, max=55)
     private String refCode;
 
     @NotNull
     @Size(min = 8,max=50)
+    @JsonIgnore
     private String password;
 
     @JsonView(Views.Base.class)
@@ -56,15 +58,6 @@ public class User extends BaseEntity implements UserDetails  {
     private String image;
 
     private String walletId;
-
-//    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-//    @JoinTable(name = "relation",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "following_id"))
-//    private List<User> following;
-//
-//    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "following")
-//    private List<User> followers;
 
     @OneToMany(fetch = FetchType.EAGER,mappedBy="to")
     @JsonIgnore
@@ -79,8 +72,6 @@ public class User extends BaseEntity implements UserDetails  {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return AuthorityUtils.createAuthorityList("ROLE_USER");
     }
-
-
 
     @Override
     public boolean isAccountNonExpired() {
@@ -101,63 +92,5 @@ public class User extends BaseEntity implements UserDetails  {
     public boolean isEnabled() {
         return true;
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getRefCode() {
-        return refCode;
-    }
-
-    public void setRefCode(String refCode) {
-        this.refCode = refCode;
-    }
-
-    public Long getBalance() {
-        return balance;
-    }
-
-    public void setBalance(Long balance) {
-        this.balance = balance;
-    }
-
-    public String getWalletId() {
-        return walletId;
-    }
-
-    public void setWalletId(String walletId) {
-        this.walletId = walletId;
-    }
-
 
 }

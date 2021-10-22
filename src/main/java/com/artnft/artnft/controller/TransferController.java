@@ -1,10 +1,10 @@
 package com.artnft.artnft.controller;
 
-import com.artnft.artnft.CurrentUser;
 import com.artnft.artnft.dto.TransferRequest;
 import com.artnft.artnft.entity.User;
 import com.artnft.artnft.error.ApiError;
 import com.artnft.artnft.service.TransferService;
+import com.artnft.artnft.valitor.annotations.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
