@@ -2,10 +2,11 @@ package com.artnft.artnft.controller;
 
 import com.artnft.artnft.dto.MarketDTO;
 import com.artnft.artnft.entity.Market;
+import com.artnft.artnft.entity.User;
 import com.artnft.artnft.response.ApiResponse;
 import com.artnft.artnft.service.MarketService;
+import com.artnft.artnft.valitor.annotations.CurrentUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,13 +24,13 @@ import java.util.List;
 public class MarketController {
     private final MarketService marketService;
 
-    @PostMapping("/sell/{userId}/{nftId}/{amount}")
+    @PostMapping("/sell/{nftId}/{amount}")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ResponseEntity<ApiResponse> addMarketItem(
-            @PathVariable Long userId,
+            @CurrentUser User user,
             @PathVariable Long nftId,
             @PathVariable Long amount) {
-        Market marketItem = marketService.addMarketItem(userId, nftId, amount);
+        Market marketItem = marketService.addMarketItem(user, nftId, amount);
         return ApiResponse.responseOk(marketItem);
     }
 
@@ -43,23 +44,31 @@ public class MarketController {
 
     //Nft adına göre page ile son recordları getir
     @GetMapping("/list/{nftName}")
-    public Page<MarketDTO> getMarketItemsByPage(
+    public ResponseEntity<ApiResponse> getMarketItemsByPage(
             @PathVariable String nftName,
-            @Param("page") int page,
-            @Param("size") int size,
-            @Param("sort") int sort) {
+            @RequestParam("page") int page,
+            @RequestParam(value = "sort", defaultValue = "desc") String sort) {
         Pageable pageable;
-        if (sort == -1) {
-            pageable = PageRequest.of(page, size).withSort(Sort.Direction.DESC, "id");
+
+        if (sort.equals("desc")) {
+            pageable = PageRequest.of(page, 4).withSort(Sort.Direction.DESC, "id");
         } else {
-            pageable = PageRequest.of(page, size).withSort(Sort.Direction.ASC, "id");
+            pageable = PageRequest.of(page, 4).withSort(Sort.Direction.ASC, "id");
         }
-        return marketService.getMarketItemsByPage(pageable, nftName).map(MarketDTO::new);
+        return ApiResponse.responseOk(marketService.getMarketItemsByPage(pageable, nftName).map(MarketDTO::new));
     }
 
     @GetMapping("/getlist")
-    public List<MarketDTO> getMarketList(Pageable page) {
-        return marketService.findMarketList();
+    public ResponseEntity<ApiResponse> getMarketList(
+            @RequestParam("page") int page,
+            @RequestParam(value = "sort", defaultValue = "desc") String sort) {
+        Pageable pageable;
+        if (sort.equals("desc")) {
+            pageable = PageRequest.of(page, 4).withSort(Sort.Direction.DESC, "id");
+        } else {
+            pageable = PageRequest.of(page, 4).withSort(Sort.Direction.ASC, "id");
+        }
+        return ApiResponse.responseOk(marketService.findMarketList(pageable));
     }
 
     @GetMapping({"/last/{sort}", "/last"})

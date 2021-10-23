@@ -37,12 +37,13 @@ public class MarketService {
     private final ChangedRepository changedRepository;
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public Market addMarketItem(Long userId, Long nftId, Long amount) {
-        User currentUser = userService.getUserById(userId);
+    public Market addMarketItem(User user, Long nftId, Long amount) {
+
+        User currentUser = userService.getUserById(user.getId());
         Optional<Nft> currentNft = nftService.findById(nftId);
         if (currentNft.isPresent()) {
             Long idWhichSellNftUserId = currentNft.get().getUser().getId();
-            if (Objects.equals(userId, idWhichSellNftUserId) && !currentNft.get().isSellStatus()) {
+            if (Objects.equals(user.getId(), idWhichSellNftUserId) && !currentNft.get().isSellStatus()) {
                 Market market = new Market();
                 currentNft.get().setSellStatus(true);
                 nftService.saveNft(currentNft.get());
@@ -61,12 +62,14 @@ public class MarketService {
         return marketRepository.findAll(page);
     }
 
-    public List<MarketDTO> findMarketList() {
-        return marketRepository.findAll()
+    public Page<MarketDTO> findMarketList(Pageable pageable) {
+        List<MarketDTO> collect = marketRepository.findAll()
                 .stream()
                 .map(MarketDTO::new)
                 .sorted(Comparator.comparingLong(MarketDTO::getAmount))
                 .collect(Collectors.toList());
+        Page<MarketDTO> page = new PageImpl<>(collect);
+        return page;
     }
 
     //NFT ADIYLA MARKETTEKİLERİ LİSTELEME SON EKLENENLER :)
