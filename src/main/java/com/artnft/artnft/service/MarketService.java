@@ -62,14 +62,12 @@ public class MarketService {
         return marketRepository.findAll(page);
     }
 
-    public Page<MarketDTO> findMarketList(Pageable pageable) {
-        List<MarketDTO> collect = marketRepository.findAll()
+    public List<MarketDTO> findMarketList() {
+        return marketRepository.findAll()
                 .stream()
                 .map(MarketDTO::new)
                 .sorted(Comparator.comparingLong(MarketDTO::getAmount))
                 .collect(Collectors.toList());
-        Page<MarketDTO> page = new PageImpl<>(collect);
-        return page;
     }
 
     //NFT ADIYLA MARKETTEKİLERİ LİSTELEME SON EKLENENLER :)
