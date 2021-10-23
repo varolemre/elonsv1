@@ -8,7 +8,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "nft")
@@ -21,15 +20,12 @@ public class Nft {
     private Long id;
 
     @JsonView(Views.Base.class)
-    @NotNull(message = "Nft Name Can Not Be Empty!")
     private String name;
 
     @JsonView(Views.Base.class)
-    @NotNull(message = "Nft Type Not Be Empty!")
     private String qtype;
 
     @JsonView(Views.Base.class)
-    @NotNull(message = "Nft Serial Can Not Be Empty!")
     private int serial;
 
     @JsonView(Views.Base.class)
