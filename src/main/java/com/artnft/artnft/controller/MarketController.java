@@ -7,7 +7,6 @@ import com.artnft.artnft.response.ApiResponse;
 import com.artnft.artnft.service.MarketService;
 import com.artnft.artnft.valitor.annotations.CurrentUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -45,7 +44,7 @@ public class MarketController {
 
     //Nft adına göre page ile son recordları getir
     @GetMapping("/list/{nftName}")
-    public Page<MarketDTO> getMarketItemsByPage(
+    public ResponseEntity<ApiResponse> getMarketItemsByPage(
             @PathVariable String nftName,
             @RequestParam("page") int page,
             @RequestParam(value = "sort", defaultValue = "desc") String sort) {
@@ -56,11 +55,11 @@ public class MarketController {
         } else {
             pageable = PageRequest.of(page, 4).withSort(Sort.Direction.ASC, "id");
         }
-        return marketService.getMarketItemsByPage(pageable, nftName).map(MarketDTO::new);
+        return ApiResponse.responseOk(marketService.getMarketItemsByPage(pageable, nftName).map(MarketDTO::new));
     }
 
     @GetMapping("/getlist")
-    public Page<MarketDTO> getMarketList(
+    public ResponseEntity<ApiResponse> getMarketList(
             @RequestParam("page") int page,
             @RequestParam(value = "sort", defaultValue = "desc") String sort) {
         Pageable pageable;
@@ -69,7 +68,7 @@ public class MarketController {
         } else {
             pageable = PageRequest.of(page, 4).withSort(Sort.Direction.ASC, "id");
         }
-        return marketService.findMarketList(pageable);
+        return ApiResponse.responseOk(marketService.findMarketList(pageable));
     }
 
     @GetMapping({"/last/{sort}", "/last"})
