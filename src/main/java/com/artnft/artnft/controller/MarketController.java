@@ -60,8 +60,16 @@ public class MarketController {
     }
 
     @GetMapping("/getlist")
-    public List<MarketDTO> getMarketList(Pageable page) {
-        return marketService.findMarketList();
+    public Page<MarketDTO> getMarketList(
+            @RequestParam("page") int page,
+            @RequestParam(value = "sort", defaultValue = "desc") String sort) {
+        Pageable pageable;
+        if (sort.equals("desc")) {
+            pageable = PageRequest.of(page, 4).withSort(Sort.Direction.DESC, "id");
+        } else {
+            pageable = PageRequest.of(page, 4).withSort(Sort.Direction.ASC, "id");
+        }
+        return marketService.findMarketList(pageable);
     }
 
     @GetMapping({"/last/{sort}", "/last"})
