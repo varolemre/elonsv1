@@ -18,7 +18,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final String[] WHITE_LIST = {
             "/auth",
             "/api/user/getUser/**",
-            "/api/market/**"
+            "/api/market/**",
+            "/api/users"
     };
 
     private final String[] BLACK_LIST = {

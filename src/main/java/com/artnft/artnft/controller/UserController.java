@@ -38,15 +38,15 @@ public class UserController {
         return ApiResponse.responseCreated(true);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     @JsonView(Views.Base.class)
-    public User getUsers(@PathVariable Long id) {
+    public User getUserById(@PathVariable Long id) {
         return userService.getUsers(id);
     }
 
     @Transactional
-    @GetMapping("/gets/{username}")
-    public UserDto getUser(@PathVariable String username) {
+    @GetMapping("/username/{username}")
+    public UserDto getUserByUsername(@PathVariable String username) {
         User user = userService.getByUsername(username);
         return new UserDto(user);
     }

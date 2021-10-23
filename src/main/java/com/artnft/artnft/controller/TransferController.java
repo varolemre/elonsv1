@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/send")
+@RequestMapping("/api/send")
 @RequiredArgsConstructor
 public class TransferController {
     private final TransferService transferService;

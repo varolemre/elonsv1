@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/nft")
+@RequestMapping("/api/nft")
 @RequiredArgsConstructor
 public class NftController {
     private final NftService nftService;
