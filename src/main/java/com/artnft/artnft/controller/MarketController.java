@@ -2,9 +2,12 @@ package com.artnft.artnft.controller;
 
 import com.artnft.artnft.dto.MarketDTO;
 import com.artnft.artnft.entity.Market;
+import com.artnft.artnft.entity.Nft;
+import com.artnft.artnft.entity.Trade;
 import com.artnft.artnft.entity.User;
 import com.artnft.artnft.response.ApiResponse;
 import com.artnft.artnft.service.MarketService;
+import com.artnft.artnft.service.TradeService;
 import com.artnft.artnft.valitor.annotations.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +26,7 @@ import java.util.List;
 @RequestMapping("/api/market")
 public class MarketController {
     private final MarketService marketService;
+    private final TradeService tradeService;
 
     @PostMapping("/sell/{nftId}/{amount}")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -32,6 +36,14 @@ public class MarketController {
             @PathVariable Long amount) {
         Market marketItem = marketService.addMarketItem(user, nftId, amount);
         return ApiResponse.responseOk(marketItem);
+    }
+
+    @GetMapping("/buy/{marketId}")
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public ResponseEntity<ApiResponse> buyMarketItem(
+            @CurrentUser User user, @PathVariable Long marketId
+    ){
+       return marketService.buyMarketItem(user, marketId);
     }
 
     @GetMapping
@@ -51,9 +63,9 @@ public class MarketController {
         Pageable pageable;
 
         if (sort.equals("desc")) {
-            pageable = PageRequest.of(page, 4).withSort(Sort.Direction.DESC, "id");
+            pageable = PageRequest.of(page, 8).withSort(Sort.Direction.DESC, "id");
         } else {
-            pageable = PageRequest.of(page, 4).withSort(Sort.Direction.ASC, "id");
+            pageable = PageRequest.of(page, 8).withSort(Sort.Direction.ASC, "id");
         }
         return ApiResponse.responseOk(marketService.getMarketItemsByPage(pageable, nftName).map(MarketDTO::new));
     }
@@ -64,9 +76,9 @@ public class MarketController {
             @RequestParam(value = "sort", defaultValue = "desc") String sort) {
         Pageable pageable;
         if (sort.equals("desc")) {
-            pageable = PageRequest.of(page, 4).withSort(Sort.Direction.DESC, "id");
+            pageable = PageRequest.of(page, 8).withSort(Sort.Direction.DESC, "id");
         } else {
-            pageable = PageRequest.of(page, 4).withSort(Sort.Direction.ASC, "id");
+            pageable = PageRequest.of(page, 8).withSort(Sort.Direction.ASC, "id");
         }
         return ApiResponse.responseOk(marketService.findMarketList(pageable));
     }
@@ -94,5 +106,10 @@ public class MarketController {
     @GetMapping("/{marketId}/changes")
     public Long getChangedValue(@PathVariable Long marketId) {
         return marketService.getChangedValue(marketId);
+    }
+
+    @GetMapping("/tr/{nftName}")
+    public List<Trade> getTrade(@PathVariable String nftName){
+        return tradeService.findTradeByNftName(nftName);
     }
 }

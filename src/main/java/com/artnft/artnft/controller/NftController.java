@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/nft")
@@ -27,7 +28,13 @@ public class NftController {
 
     @PostMapping
     public ResponseEntity<ApiResponse> addNft(@Valid @RequestBody NftSaveDto nftSaveDto) {
+        Long collectionId = nftSaveDto.getCollection();
         Nft nft = modelMapper.map(nftSaveDto, Nft.class);
-        return ApiResponse.responseCreated(nftService.addNft(nft));
+        return ApiResponse.responseCreated(nftService.addNft(nft, collectionId));
+    }
+
+    @GetMapping("/{nftId}")
+    public NftDto getNft(@PathVariable Long nftId){
+        return nftService.findByIdDto(nftId);
     }
 }

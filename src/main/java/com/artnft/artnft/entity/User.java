@@ -63,6 +63,18 @@ public class User extends BaseEntity implements UserDetails  {
     @JsonIgnore
     private List<Followers> followers;
 
+    @JsonView(Views.Base.class)
+    private Long level;
+
+    @JsonView(Views.Base.class)
+    private Long collectorPoints;
+
+    @JsonView(Views.Base.class)
+    private String userUUID;
+
+    @JsonView(Views.Base.class)
+    private String userRefLink;
+
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy="from",cascade = CascadeType.ALL)
     @JsonIgnore

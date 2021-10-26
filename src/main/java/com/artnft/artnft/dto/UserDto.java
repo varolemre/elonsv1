@@ -11,6 +11,10 @@ public class UserDto {
     private String wallet;
     private String displayName;
     private Long balance;
+    private Long level;
+    private Long collectorPoints;
+    private String userUID;
+    private String userRefLink;
 
 
     public UserDto(User user) {
@@ -20,6 +24,10 @@ public class UserDto {
         this.setWallet(user.getWalletId());
         this.setDisplayName(user.getDisplayName());
         this.setBalance(user.getBalance());
+        this.setLevel(user.getLevel());
+        this.setCollectorPoints(user.getCollectorPoints());
+        this.setUserUID(user.getUserUUID());
+        this.setUserRefLink(user.getUserRefLink());
     }
 
 }

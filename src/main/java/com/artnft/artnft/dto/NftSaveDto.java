@@ -13,6 +13,8 @@ public class NftSaveDto {
     @NotNull(message = "Nft Serial Can Not Be Empty!")
     private int serial;
     private String dropDate;
+    private String image;
+    private Long collection;
     private String licence;
     private Long totalEdition;
     private boolean sellStatus;

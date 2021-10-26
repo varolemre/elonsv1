@@ -60,6 +60,9 @@ public class UserController {
 
     @PostMapping("/follow/{username}")
     public ResponseEntity<?> followUser(@PathVariable String username, @CurrentUser User user) {
+        System.out.println("Follow Metodu Çalıstı");
+        System.out.println(user.getUsername());
+        System.out.println(username);
         return userService.followUser(username, user);
     }
 
@@ -70,7 +73,11 @@ public class UserController {
 
     @GetMapping("/{username}/follow")
     public Long getUsersFollowersNumber(@PathVariable String username) {
-        return userService.getFollowerNumber(username);
+        Long followerNumber = userService.getFollowerNumber(username);
+        if(followerNumber==null){
+            followerNumber =1L;
+        }
+        return followerNumber;
     }
 
     @GetMapping("/fn")

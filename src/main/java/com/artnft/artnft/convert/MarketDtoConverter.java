@@ -19,7 +19,7 @@ public class MarketDtoConverter {
         marketDTO.setCreatedDate(market.getCreatedDate());
         marketDTO.setSerial(market.getSerial());
         marketDTO.setTotalNftSale(totalNft);
-        marketDTO.setTotalEdition(market.getNft().getTotalEdition());
+        marketDTO.setTotalRarity(market.getNft().getTotalRarity());
         marketDTO.setFloorPrice(floorPrice);
         marketDTO.setDropDate(market.getNft().getDropDate());
         marketDTO.setListPrice(market.getNft().getListPrice());
