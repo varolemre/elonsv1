@@ -35,6 +35,9 @@ public class Nft {
     private Long totalEdition;
 
     @JsonView(Views.Base.class)
+    private Long totalRarity;
+
+    @JsonView(Views.Base.class)
     private String dropDate;
 
     @JsonView(Views.Base.class)
@@ -46,10 +49,15 @@ public class Nft {
     @JsonView(Views.Sensitive.class)
     private boolean sellStatus=false;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
+    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
     @JoinColumn(name="user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     User user;
+
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name = "collection_id")
+    @JsonView(Views.Base.class)
+    Collection collection;
 
 }

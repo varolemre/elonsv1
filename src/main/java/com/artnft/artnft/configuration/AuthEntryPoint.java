@@ -18,10 +18,7 @@ public class AuthEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
         response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
-        String errorMap = getErrorMap(httpServletRequest, response, e);
-        response.getOutputStream().println(errorMap);
-        response.getWriter().write(errorMap);
-        response.getWriter().flush();
+
         //todo
     }
 

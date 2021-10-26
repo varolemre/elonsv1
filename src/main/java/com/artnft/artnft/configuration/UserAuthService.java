@@ -15,10 +15,12 @@ public class UserAuthService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println("user aut servicee "+username);
         User inDB = userRepository.findByUsername(username);
         if(inDB==null){
             throw  new UsernameNotFoundException("User not found!");
         }
+        System.out.println("user auth inDb: "+inDB);
         return inDB;
     }
 }

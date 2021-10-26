@@ -2,22 +2,24 @@ package com.artnft.artnft.service;
 
 import com.artnft.artnft.convert.MarketDtoConverter;
 import com.artnft.artnft.dto.MarketDTO;
-import com.artnft.artnft.entity.Changed;
-import com.artnft.artnft.entity.Market;
-import com.artnft.artnft.entity.Nft;
-import com.artnft.artnft.entity.User;
+import com.artnft.artnft.entity.*;
 import com.artnft.artnft.exception.CustomNotAllowedException;
 import com.artnft.artnft.exception.CustomNotFoundException;
 import com.artnft.artnft.repository.ChangedRepository;
 import com.artnft.artnft.repository.MarketRepository;
+import com.artnft.artnft.repository.TradeRepository;
+import com.artnft.artnft.repository.UserRepository;
+import com.artnft.artnft.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.yaml.snakeyaml.error.Mark;
 
 import java.util.Comparator;
 import java.util.List;
@@ -35,6 +37,8 @@ public class MarketService {
     private final NftService nftService;
     private final MarketDtoConverter marketDtoConverter;
     private final ChangedRepository changedRepository;
+    private final TradeService tradeService;
+    private final UserRepository userRepository;
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Market addMarketItem(User user, Long nftId, Long amount) {
@@ -153,6 +157,41 @@ public class MarketService {
             return byNftNameAndVariant.getChangedValue();
         }
         return 0L; //todo
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public ResponseEntity<ApiResponse> buyMarketItem(User user, Long marketId) {
+        System.out.println("User Geldi"+user.getUsername());
+        System.out.println("MarketId Geldi"+marketId);
+        Market marketItem = getMarketItem(marketId);
+        Long userBalance = user.getBalance();
+        Long nftPrice = marketItem.getAmount();
+        User sellerUser = marketItem.getUser();
+        Long selletUserBalance = sellerUser.getBalance();
+        if(marketItem.getNft().isSellStatus()){
+            if(userBalance>= nftPrice){
+                marketItem.getNft().setSellStatus(false);
+                marketItem.getNft().setUser(user);
+                user.setBalance(userBalance-nftPrice);
+                sellerUser.setBalance(selletUserBalance+nftPrice-nftPrice*2/100);
+                tradeService.addTrade(user.getId(),nftPrice,marketItem.getNft().getName());
+                userRepository.save(user);
+                userRepository.save(sellerUser);
+                marketRepository.deleteById(marketId);
+                return ResponseEntity.ok().build();
+            }else
+                throw new CustomNotAllowedException("You need more gems!");
+        }else
+            throw new CustomNotAllowedException("Purchase Failed!");
+        }
+
+
+    public Market getMarketItem(Long id){
+        Optional<Market> byId = marketRepository.findById(id);
+        if(byId.isEmpty()){
+            throw new CustomNotFoundException("Item");
+        }else
+            return byId.get();
     }
 
 

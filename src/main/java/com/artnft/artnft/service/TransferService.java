@@ -21,6 +21,7 @@ public class TransferService {
 
     @Transactional
     public ResponseEntity<?> sendNft(TransferRequest transferRequest, User user) {
+        System.out.println("user amk "+user);
         try {
             User currentUser = userService.getUserById(user.getId());
             if (Objects.equals(currentUser.getId(), user.getId())) {

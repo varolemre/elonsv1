@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final UserAuthService userAuthService;
     private final String[] WHITE_LIST = {
-            "/auth",
+            "/auth/**",
             "/api/user/getUser/**",
             "/api/market/**",
             "/api/users"
