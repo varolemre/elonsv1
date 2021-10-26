@@ -12,14 +12,14 @@ public class NftDto {
     private Long floorPrice;
 
 
-    public NftDto(Nft nft){
+    public NftDto(Nft nft) {
         this.setName(nft.getName());
         this.setQtype(nft.getQtype());
         this.setSerial(nft.getSerial());
         this.setImage(nft.getImage());
     }
 
-    public NftDto(Nft nft, Long floorPrice){
+    public NftDto(Nft nft, Long floorPrice) {
         this.setName(nft.getName());
         this.setQtype(nft.getQtype());
         this.setSerial(nft.getSerial());
@@ -27,7 +27,7 @@ public class NftDto {
         this.setFloorPrice(floorPrice);
     }
 
-    public NftDto(){
+    public NftDto() {
 
     }
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class NftDtoConverter {
 
-    public NftDto convert(Nft nft, Long floorPrice){
+    public NftDto convert(Nft nft, Long floorPrice) {
         NftDto nftDto = new NftDto();
         nftDto.setName(nft.getName());
         nftDto.setImage(nft.getImage());

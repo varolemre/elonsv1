@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     @PostMapping("/auth")
     @JsonView(Views.Base.class)
-    ResponseEntity<?> handleAuthentication(@CurrentUser User user){
+    ResponseEntity<?> handleAuthentication(@CurrentUser User user) {
         return ResponseEntity.ok(user);
     }
 

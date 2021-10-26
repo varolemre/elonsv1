@@ -2,7 +2,6 @@ package com.artnft.artnft.controller;
 
 import com.artnft.artnft.dto.MarketDTO;
 import com.artnft.artnft.entity.Market;
-import com.artnft.artnft.entity.Nft;
 import com.artnft.artnft.entity.Trade;
 import com.artnft.artnft.entity.User;
 import com.artnft.artnft.response.ApiResponse;
@@ -42,8 +41,8 @@ public class MarketController {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ResponseEntity<ApiResponse> buyMarketItem(
             @CurrentUser User user, @PathVariable Long marketId
-    ){
-       return marketService.buyMarketItem(user, marketId);
+    ) {
+        return marketService.buyMarketItem(user, marketId);
     }
 
     @GetMapping
@@ -109,7 +108,7 @@ public class MarketController {
     }
 
     @GetMapping("/tr/{nftName}")
-    public List<Trade> getTrade(@PathVariable String nftName){
+    public List<Trade> getTrade(@PathVariable String nftName) {
         return tradeService.findTradeByNftName(nftName);
     }
 }

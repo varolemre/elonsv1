@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/nft")
@@ -34,7 +33,7 @@ public class NftController {
     }
 
     @GetMapping("/{nftId}")
-    public NftDto getNft(@PathVariable Long nftId){
+    public NftDto getNft(@PathVariable Long nftId) {
         return nftService.findByIdDto(nftId);
     }
 }

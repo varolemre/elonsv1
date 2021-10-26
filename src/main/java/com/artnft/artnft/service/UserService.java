@@ -30,11 +30,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
+    final int SHORT_ID_LENGTH = 7;
     private final UserRepository userRepository;
     private final FollowersRepository followersRepository;
     private final NftRepository nftRepository;
     private final MarketRepository marketRepository;
-    final int SHORT_ID_LENGTH = 7;
 
     @Transactional(propagation = Propagation.MANDATORY)
     public User saveUser(User user) {
@@ -43,7 +43,7 @@ public class UserService {
         user.setLevel(1L);
         String userUID = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
         user.setUserUUID(userUID);
-        user.setUserRefLink("https://elons.co/"+userUID);
+        user.setUserRefLink("https://elons.co/" + userUID);
         return userRepository.save(user);
     }
 
@@ -101,22 +101,19 @@ public class UserService {
 
     public Long getFollowerNumber(String username) {
         User byUsername = getByUsername(username);
-       Long size = Long.valueOf(byUsername.getFollowers().size());
+        Long size = Long.valueOf(byUsername.getFollowers().size());
         System.out.println(size);
-        if(size==0){
+        if (size == 0) {
             size = 0l;
         }
-        return  size;
+        return size;
     }
 
     public boolean checkFollow(String username, User user) {
         User byUsername = getByUsername(username);
         List<Followers> followers1 = byUsername.getFollowers();
         List<Followers> collect = followers1.stream().filter(p -> p.getFrom().getId().equals(user.getId())).collect(Collectors.toList());
-        if (!collect.isEmpty()) {
-            return false;
-        } else
-            return true;
+        return collect.isEmpty();
     }
 
     public Long getFollowingNumber(User user) {
@@ -133,7 +130,7 @@ public class UserService {
         return marketRepository.findByUserId(user.getId());
     }
 
-    private void isUserExists(){
+    private void isUserExists() {
 
     }
 }

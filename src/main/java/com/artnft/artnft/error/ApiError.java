@@ -25,11 +25,11 @@ public class ApiError {
     private long timestamp = new Date().getTime();
 
     @JsonView(Views.Base.class)
-    private Map<String,String> validationErrors;
+    private Map<String, String> validationErrors;
 
-    public ApiError(int status,String message,String path){
-        this.status=status;
-        this.message=message;
-        this.path=path;
+    public ApiError(int status, String message, String path) {
+        this.status = status;
+        this.message = message;
+        this.path = path;
     }
 }

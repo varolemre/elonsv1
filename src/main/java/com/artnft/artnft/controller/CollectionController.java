@@ -13,12 +13,12 @@ public class CollectionController {
     private final CollectionService collectionService;
 
     @PostMapping
-    public Collection addCollection(@RequestBody Collection collection){
+    public Collection addCollection(@RequestBody Collection collection) {
         return collectionService.addCollection(collection);
     }
 
     @GetMapping("/{name}")
-    public Collection getCollection(@PathVariable String name){
+    public Collection getCollection(@PathVariable String name) {
 //        char ch = '-';
 //        name = name.replace(' ', ch);
 //        System.out.println(name);
@@ -26,12 +26,12 @@ public class CollectionController {
     }
 
     @GetMapping("/getbyid/{marketId}")
-    public Collection getCollectionById(@PathVariable Long marketId){
+    public Collection getCollectionById(@PathVariable Long marketId) {
         return collectionService.getCollectionById(marketId);
     }
 
     @GetMapping("/getbynftId/{nftId}")
-    public Collection getCollectionBynftId(@PathVariable Long nftId){
+    public Collection getCollectionBynftId(@PathVariable Long nftId) {
         return collectionService.getCollectionBynftId(nftId);
     }
 }

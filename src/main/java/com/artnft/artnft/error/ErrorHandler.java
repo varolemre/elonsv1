@@ -21,14 +21,14 @@ public class ErrorHandler implements ErrorController {
     private final ErrorAttributes errorAttributes;
 
     @RequestMapping("/error")
-    public ApiError handleError(WebRequest webRequest){
+    public ApiError handleError(WebRequest webRequest) {
         Map<String, Object> errors = this.errorAttributes.getErrorAttributes(webRequest, ErrorAttributeOptions.of(ErrorAttributeOptions.Include.MESSAGE, ErrorAttributeOptions.Include.BINDING_ERRORS));
-        String message= String.valueOf(errors.get("message"));
+        String message = String.valueOf(errors.get("message"));
         String path = String.valueOf(errors.get("path"));
-        int status = (Integer)errors.get("status");
-        log.error("ERROR ATT: "+errors);
-        ApiError error = new ApiError(status,message,path);
-        if(errors.containsKey("errors") && errors.containsKey("exception")) {
+        int status = (Integer) errors.get("status");
+        log.error("ERROR ATT: " + errors);
+        ApiError error = new ApiError(status, message, path);
+        if (errors.containsKey("errors") && errors.containsKey("exception")) {
             @SuppressWarnings("unchecked")
             List<FieldError> fieldErrors = (List<FieldError>) errors.get("errors");
             Map<String, String> validationErrors = new HashMap<>();

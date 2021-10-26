@@ -11,12 +11,12 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User,Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername(String username);
 
     Optional<User> findByMail(String mail);
 
-    @Query(value="Select u from User u")
+    @Query(value = "Select u from User u")
     Page<UserProjection> getAllUserProjection(Pageable page);
 
     User findBywalletId(String walletId);

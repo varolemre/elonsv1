@@ -28,7 +28,7 @@ public class CollectionService {
         return collectionRepository.findByName(name);
     }
 
-    public Collection getCollectionById(Long id){
+    public Collection getCollectionById(Long id) {
         Optional<Market> byId = marketRepository.findById(id);
         Long collectionId = byId.get().getNft().getCollection().getId();
         return collectionRepository.findById(collectionId).get();

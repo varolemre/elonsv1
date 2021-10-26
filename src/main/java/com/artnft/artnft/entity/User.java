@@ -20,34 +20,34 @@ import java.util.List;
 
 @Entity
 @Data
-public class User extends BaseEntity implements UserDetails  {
+public class User extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull(message = "Mail Can Not Be Empty!")
-    @Size(min=4, max=50)
+    @Size(min = 4, max = 50)
     @UniqueMail
     @JsonView(Views.Base.class)
     private String mail;
 
     @NotNull(message = "Username Can Not Be Empty!")
-    @Size(min=4, max=44)
+    @Size(min = 4, max = 44)
     @UniqueUsername
     @JsonView(Views.Base.class)
     private String username;
 
     @NotNull(message = "Display Name Can Not Be Empty!")
-    @Size(min=1, max=55)
+    @Size(min = 1, max = 55)
     @JsonView(Views.Base.class)
     private String displayName;
 
-    @Size(min=1, max=55)
+    @Size(min = 1, max = 55)
     private String refCode;
 
     @NotNull
-    @Size(min = 8,max=50)
+    @Size(min = 8, max = 50)
     @JsonIgnore
     private String password;
 
@@ -59,7 +59,7 @@ public class User extends BaseEntity implements UserDetails  {
 
     private String walletId;
 
-    @OneToMany(fetch = FetchType.EAGER,mappedBy="to")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "to")
     @JsonIgnore
     private List<Followers> followers;
 
@@ -76,7 +76,7 @@ public class User extends BaseEntity implements UserDetails  {
     private String userRefLink;
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy="from",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "from", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Followers> following;
 

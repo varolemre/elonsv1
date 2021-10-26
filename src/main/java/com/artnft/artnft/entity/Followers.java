@@ -9,20 +9,21 @@ import javax.persistence.*;
 public class Followers {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="from_user_fk",unique = true)
+    @JoinColumn(name = "from_user_fk", unique = true)
     @JsonIgnore
     private User from;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="to_user_fk")
-    @JsonIgnoreProperties({ "password", "balance","id","mail" })
+    @JoinColumn(name = "to_user_fk")
+    @JsonIgnoreProperties({"password", "balance", "id", "mail"})
     private User to;
 
-    public Followers() {};
+    public Followers() {
+    }
 
     public Followers(User from, User to) {
         this.from = from;

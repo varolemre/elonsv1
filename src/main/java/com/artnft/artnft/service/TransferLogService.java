@@ -14,7 +14,7 @@ import java.util.Date;
 public class TransferLogService {
     private final TransferLogRepository transferLogRepository;
 
-    public TransferLog saveTransferLog(User user, String walletId, Long amount, String status){
+    public TransferLog saveTransferLog(User user, String walletId, Long amount, String status) {
         TransferLog transferLog = new TransferLog();
         transferLog.setUser(user);
         transferLog.setStatus(status);

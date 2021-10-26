@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MarketDtoConverter {
 
-    public MarketDTO convert(Market market,Long totalNft,Long floorPrice){
+    public MarketDTO convert(Market market, Long totalNft, Long floorPrice) {
         MarketDTO marketDTO = new MarketDTO();
         marketDTO.setMarketId(market.getId());
         marketDTO.setUserId(market.getUser().getId());

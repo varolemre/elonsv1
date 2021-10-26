@@ -14,7 +14,7 @@ public class Market extends BaseEntity {
 
     @OneToOne
     @NotNull(message = "Use Can Not Be Empty!")
-    @JsonIgnoreProperties({ "password", "balance","id","mail" })
+    @JsonIgnoreProperties({"password", "balance", "id", "mail"})
     private User user;
 
     @OneToOne

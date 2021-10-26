@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface NftRepository extends JpaRepository<Nft, Long> {
-    @Query(value="Select n from Nft n")
+    @Query(value = "Select n from Nft n")
     Page<NftProjection> getAllNftsProjection(Pageable page);
 
     List<Nft> findByUserId(Long id);

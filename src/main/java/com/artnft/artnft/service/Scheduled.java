@@ -18,14 +18,12 @@ public class Scheduled {
 
     private final MarketService marketService;
     private final ChangedRepository changedRepository;
-
-    private String qtype = "Rare";
-    private Long prevPrice = 100L;
-    private String nftName = "SERA";
-    private Long l2;
-
+    private final String qtype = "Rare";
+    private final Long prevPrice = 100L;
+    private final String nftName = "SERA";
     String[] nameArray = {"SERA", "Darvin", "LOST"};
     String[] variantArray = {"Common", "Uncommon", "Rare", "Secret Rare"};
+    private Long l2;
 
     @org.springframework.scheduling.annotation.Scheduled(fixedRate = 900000L)
     void findChangedValue() {

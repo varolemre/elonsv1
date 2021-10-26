@@ -74,8 +74,8 @@ public class UserController {
     @GetMapping("/{username}/follow")
     public Long getUsersFollowersNumber(@PathVariable String username) {
         Long followerNumber = userService.getFollowerNumber(username);
-        if(followerNumber==null){
-            followerNumber =1L;
+        if (followerNumber == null) {
+            followerNumber = 1L;
         }
         return followerNumber;
     }

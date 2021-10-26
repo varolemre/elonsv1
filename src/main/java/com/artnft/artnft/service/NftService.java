@@ -9,7 +9,6 @@ import com.artnft.artnft.repository.CollectionRepository;
 import com.artnft.artnft.repository.MarketRepository;
 import com.artnft.artnft.repository.NftRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
